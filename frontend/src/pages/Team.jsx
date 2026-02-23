@@ -13,11 +13,20 @@ const teamMembers = [
   {
     name: "Dhanush",
     role: "Research Lead",
-    bio: "Specializes in gathering information and driving research initiatives.",
+    bio: "Specializes in gathering information and giving new ideas.",
     avatar: "https://ui-avatars.com/api/?name=Dhanush&background=7c3aed&color=fff",
     github: "#",
     linkedin: "#",
     email: "dhanush@example.com",
+  },
+  {
+    name: "Vyshnavi",
+    role: "Research Lead",
+    bio: "Specializes in gathering information and driving research initiatives.",
+    avatar: "https://ui-avatars.com/api/?name=Vyshnavi&background=7c3aed&color=fff",
+    github: "#",
+    linkedin: "#",
+    email: "vyshnavi@example.com",
   },
   {
     name: "Anand",
@@ -42,8 +51,7 @@ export default function Team() {
         <p className="text-center text-gray-600 dark:text-gray-300 mb-8 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base">
           We're a group of passionate developers and designers building the future of internal knowledge access.
         </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {teamMembers.map((member, idx) => (
             <div
               key={idx}

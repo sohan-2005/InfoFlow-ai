@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Send, Sparkles } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Send, Sparkles, Upload } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useTheme } from "../context/ThemeContext";
 import { useChat } from "../context/ChatContext";
@@ -9,6 +9,17 @@ export default function ChatPage() {
   const { messages, addMessage, clearMessages } = useChat();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -42,31 +53,73 @@ export default function ChatPage() {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setUploading(true);
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`✅ Uploaded successfully. Indexed ${data.chunks} chunks.`);
+      } else {
+        alert(`❌ Upload failed: ${data.error}`);
+      }
+    } catch (error) {
+      alert('❌ Error uploading file');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 pt-16">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-100/20 to-purple-100/20 dark:from-gray-900/50 dark:to-gray-800/50" />
 
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl dark:bg-gray-900/70 shadow-2xl">
-          {/* Header */}
           <div className="border-b border-gray-200/50 dark:border-gray-700/50 p-3 sm:p-4 flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             <h1 className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-sm sm:text-base">
               InfoFlow AI
             </h1>
+            
+            <input
+              type="file"
+              id="fileUpload"
+              accept=".pdf,.txt,.md"
+              style={{ display: 'none' }}
+              onChange={handleFileUpload}
+              disabled={uploading}
+            />
+            <button
+              onClick={() => document.getElementById('fileUpload').click()}
+              disabled={uploading}
+              className="ml-auto text-xs px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 disabled:opacity-50"
+              title="Upload a document (PDF, TXT, MD)"
+            >
+              {uploading ? '...' : <Upload className="h-4 w-4" />}
+            </button>
+
             <button
               onClick={() => {
                 if (window.confirm("Clear all messages?")) {
                   clearMessages();
                 }
               }}
-              className="ml-auto text-xs px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
+              className="text-xs px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
             >
               Clear
             </button>
           </div>
 
-          {/* Messages */}
           <div className="h-[400px] sm:h-[500px] overflow-y-auto p-3 sm:p-4 space-y-4">
             {messages.map((msg, i) => (
               <div key={i} className="space-y-2">
@@ -82,7 +135,6 @@ export default function ChatPage() {
                     {msg.content}
                   </div>
                 </div>
-                {/* Sources */}
                 {msg.role === "assistant" && msg.sources?.length > 0 && (
                   <div className="flex flex-wrap gap-2 pl-2">
                     {msg.sources.map((source, idx) => (
@@ -113,9 +165,9 @@ export default function ChatPage() {
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className="border-t border-gray-200/50 dark:border-gray-700/50 p-3 sm:p-4">
             <div className="flex gap-2">
               <input

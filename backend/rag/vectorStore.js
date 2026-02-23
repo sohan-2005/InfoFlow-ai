@@ -7,11 +7,9 @@ const { Document } = require("@langchain/core/documents");
 const fs = require("fs/promises");
 const path = require("path");
 const pdfParse = require("pdf-parse");
-require("dotenv").config();
 
 let vectorStore = null;
 
-// Custom PDF loader
 async function loadPDF(filePath) {
   const dataBuffer = await fs.readFile(filePath);
   const pdfData = await pdfParse(dataBuffer);
@@ -21,7 +19,6 @@ async function loadPDF(filePath) {
   });
 }
 
-// Custom text loader
 async function loadText(filePath) {
   const content = await fs.readFile(filePath, "utf-8");
   return new Document({
@@ -80,7 +77,6 @@ async function getVectorStore() {
       throw new Error("No documents available. Cannot create vector store.");
     }
     
-    // Local embeddings – works offline, free
     const embeddings = new HuggingFaceTransformersEmbeddings({
       model: "Xenova/all-MiniLM-L6-v2",
     });
@@ -92,10 +88,10 @@ async function getVectorStore() {
 }
 
 function createChain(retriever) {
-  // Local LLM via Ollama – free, private, no API key
   const model = new ChatOllama({
-    model: "llama3.2:3b",   // make sure this model is pulled
+    model: "llama3.2:3b",
     temperature: 0.1,
+    num_predict:256,
   });
 
   return RetrievalQAChain.fromLLM(model, retriever, {
