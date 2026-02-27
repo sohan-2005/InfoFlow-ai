@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Team from "./pages/Team";
 import ChatPage from "./pages/ChatPage";
 
 function App() {
@@ -10,7 +9,6 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/team" element={<Team />} />
         <Route path="/chat" element={<ChatPage />} />
       </Routes>
     </Router>

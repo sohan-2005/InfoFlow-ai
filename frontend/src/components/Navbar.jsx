@@ -23,9 +23,6 @@ export default function Navbar() {
             <Link to="/" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition">
               Home
             </Link>
-            <Link to="/team" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Team
-            </Link>
             <Link to="/chat" className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition">
               Chat
             </Link>
@@ -75,13 +72,6 @@ export default function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               Home
-            </Link>
-            <Link
-              to="/team"
-              className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition"
-              onClick={() => setIsOpen(false)}
-            >
-              Team
             </Link>
             <Link
               to="/chat"
