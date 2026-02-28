@@ -11,13 +11,15 @@ const fs = require("fs/promises"); // For reading documents folder
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173'
+}));
 app.use(express.json());
 
 let vectorStore, chain;
 const uploadedFileNames = new Set(); // Track uploaded filenames
 
-// On startup, load existing files from documents folder into the Set
+// On startup, load existing files from the documents folder into the Set
 (async () => {
   try {
     const docsPath = path.join(process.cwd(), "documents");
