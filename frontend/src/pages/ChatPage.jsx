@@ -4,6 +4,9 @@ import { cn } from "../lib/utils";
 import { useTheme } from "../context/ThemeContext";
 import { useChat } from "../context/ChatContext";
 
+// Get API URL from environment variable, fallback to localhost for development
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function ChatPage() {
   const { theme } = useTheme();
   const { messages, addMessage, clearMessages } = useChat();
@@ -30,7 +33,7 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/chat", {
+      const res = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage }),
@@ -62,7 +65,7 @@ export default function ChatPage() {
 
     setUploading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const res = await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
         body: formData,
       });

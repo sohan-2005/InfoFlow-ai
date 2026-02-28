@@ -89,7 +89,8 @@ async function getVectorStore() {
 
 function createChain(retriever) {
   const model = new ChatOllama({
-    model: "llama3.2:3b",
+    model: "llama3.2:1b",
+    baseUrl: process.env.OLLAMA_BASE_URL,
     temperature: 0.1,
     num_predict:256,
   });
